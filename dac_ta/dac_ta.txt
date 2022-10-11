@@ -1,0 +1,67 @@
+trò chơi BINGO 
+mô tả trò chơi:
+khi bắt đầu trò chơi, người chơi sẽ có 1 bàn cờ có kích thước 5x5
+mỗi vòng sẽ thì người chơi gửi lên cho server toạ độ mình đánh và số mình đánh (số sẽ được đánh trong khoảng 1 - 25)
+khi server nhận dc gói tin sẽ điền vô bàn cờ. Sau đó gửi bàn cờ đã thay đổi cho client.
+các số sẽ chỉ được đánh 1 lần duy nhất 
+trò chơi sẽ kết thúc khi 1 trong 2 bên có được 5 hàng ngang, hàng dọc hoặc hàng chéo. (Mỗi cái gồm 5 số được xếp thẳng hàng với nhau)
+
+Mỗi gói tin gồm tối thiểu 2 trường
+- type: int 4 bytes, little endian, là loại gói tin
+- len: int 4 bytes, little endian, là độ dài mảng data đi kèm đằng sau
+Mỗi gói tin có thể kèm theo mảng data có độ dài len
+Mỗi phần tử của mảng có kiểu: int 4 bytes, little endian
+
+Type:
+	0: PKT_HELLO
+		- là gói tin đầu tiên trao đổi, bắt buộc phải có
+			- data theo sau là string chứa mã sinh viên (bắt buộc)
+			- độ dài của mã sinh viên chứa trong trường len.
+
+	1: PKT_SERVER_SS
+		gói tin được server gửi khi server đã sẵn sàng.
+		độ dài trường len là 0.
+
+	2: PKT_SS
+		gói tin được client gửi khi đã sẵn sàng chơi.
+		độ dài trường len là 0.
+
+	3: PKT_START 
+		gói tin do sever gửi cho các client để thông báo game đã bắt đầu.
+		độ dài trường len bằng 0
+
+	4: PKT_HIT
+		- clinet sẽ gửi các nước đi của mình qua gói tin này
+			- trường len có giá trị bằng 3
+			- data theo sau gồm 3 số theo thứ tự là x, y, z. 
+				x: là toạ độ x tính từ bên trái bàn cờ sang. Có giá trị nằm trong khoảng từ 0-4
+				y: toạ độ y tính từ trên xuống. Có gia trị nằm trong khoảng 0 - 4
+				z là số được đánh ra. Có giá trị trong khoảng 1 - 25.
+
+	5: PKT_REFUSE
+		gói tin từ chối do đánh số trùng nhau hoặc đánh vào ô đã được đánh trước đó.
+		yêu cầu client gửi lại nước đi
+
+	6: PKT_ACCEPT
+		gửi gói tin này khi chấp nhận nước đi dc gửi tới đồng thời gửi trạng thái bàn cờ của client về.
+		trường len có dộ dài là 25
+		mảng data kèm theo là trạng thái bàn cờ của cilent.
+
+	7: PKT_GG
+		khi trò chơi kết thúc server sẽ gửi gói tin này
+		trường data có giá trị bằng 1.
+		data kèm theo gồm 1 số: 
+			- 1: thắng
+			- 0: thua
+	8: PKT_FF
+		gói tin được gửi khi người chơi muốn kết thúc trò chơi. Và bị xử thua.
+
+	9: PKT_REFUSE_2:
+		được server gửi khi nhận được gói tin không đúng format 
+		kết thúc kết nối.
+
+	10: PKT_CLIS:
+		server gửi gói tin cho clinet để quyết định quyền được đánh.
+		trường len có giá trị bằng 1
+			- 0: không được đánh
+			- 1: được đánh

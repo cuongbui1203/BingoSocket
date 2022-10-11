@@ -1,5 +1,6 @@
 # Compiled class file
 *.class
+src/*.class
 
 # Log file
 *.log
