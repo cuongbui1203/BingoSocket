@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 // import java.util.Random;
 
-public class ServerRecv {
+public class ServerSend {
 
     private static void addPayload(ArrayList<Byte> sendPayload, int value) {
         sendPayload.addAll(Arrays.asList(ConverNum.toObjects(ConverNum.reverse(ConverNum.intToByteArray(value)))));
@@ -40,6 +40,20 @@ public class ServerRecv {
         addPayload(sendPayload, type);
         addPayload(sendPayload, len);
         addPayload(sendPayload, data);
+        write(socket.getOutputStream(), sendPayload);
+
+    }
+
+    public static void write(Socket socket, int type, int len, Number[][] data) throws IOException {
+        ArrayList<Byte> sendPayload = new ArrayList<>();
+        addPayload(sendPayload, type);
+        addPayload(sendPayload, len);
+        for (int y = 0; y < 5; y++) {
+            for (int x = 0; x < 5; x++) {
+                addPayload(sendPayload, data[y][x].num);
+                addPayload(sendPayload, data[y][x].check);
+            }
+        }
         write(socket.getOutputStream(), sendPayload);
 
     }

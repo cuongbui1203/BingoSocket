@@ -32,11 +32,9 @@ Type:
 
 	4: PKT_HIT
 		- clinet sẽ gửi các nước đi của mình qua gói tin này
-			- trường len có giá trị bằng 3
-			- data theo sau gồm 3 số theo thứ tự là x, y, z. 
-				x: là toạ độ x tính từ bên trái bàn cờ sang. Có giá trị nằm trong khoảng từ 0-4
-				y: toạ độ y tính từ trên xuống. Có gia trị nằm trong khoảng 0 - 4
-				z là số được đánh ra. Có giá trị trong khoảng 1 - 25.
+			- trường len có giá trị bằng 1
+			- data theo sau gồm 3 số theo thứ tự là x. 
+				x là số được đánh ra. Có giá trị trong khoảng 1 - 25.
 
 	5: PKT_REFUSE
 		gói tin từ chối do đánh số trùng nhau hoặc đánh vào ô đã được đánh trước đó.
@@ -46,6 +44,11 @@ Type:
 		gửi gói tin này khi chấp nhận nước đi dc gửi tới đồng thời gửi trạng thái bàn cờ của client về.
 		trường len có dộ dài là 25
 		mảng data kèm theo là trạng thái bàn cờ của cilent.
+		mỗi phần tử của mảng gồm 2 số nguyên a b
+			a: giá trị tại ô đó
+			b: trạng thái ô đó
+				-0: chưa chọn
+				-1: đã chọn
 
 	7: PKT_GG
 		khi trò chơi kết thúc server sẽ gửi gói tin này

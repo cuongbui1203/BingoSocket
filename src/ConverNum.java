@@ -1,7 +1,13 @@
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import javax.xml.crypto.KeySelector.Purpose;
 
 public class ConverNum {
-    
+
     public static byte[] reverse(byte[] bytes) {
         int i;
         byte t;
@@ -24,6 +30,16 @@ public class ConverNum {
         res = new byte[] { (byte) (value >>> 24), (byte) (value >>> 16), (byte) (value >>> 8), (byte) value };
         // reverse(res);
         return res;
+    }
+
+    private static byte[] concatArray(byte[] array1, byte[] array2) {
+        byte[] result = Arrays.copyOf(array1, array1.length + array2.length);
+        System.arraycopy(array2, 0, result, array1.length, array2.length);
+        return result;
+    }
+
+    public static final byte[] numbertoByteArray(Number val) {
+        return concatArray(intToByteArray(val.num), intToByteArray(val.check));
     }
 
     public static Byte[] toObjects(byte[] bytesPrim) {

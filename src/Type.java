@@ -1,15 +1,52 @@
 public enum Type {
-    HELLO(0), // goi tin chao hoi
-    SERVER_SS(1), // server san sang de tao tro choi
-    SS(2), // client san sang choi
-    START(3), // game bat dau
-    HIT(4), // client gui nuoc di
-    REFUSE(5), // server tu choi nuoc di
-    ACCEPT(6), // server chap nhan nuoc di
-    GG(7), // ket thuc game. server gui ket qua tran dau.
-    FF(8), // client tu bo game.
-    REFUSE_2(9), // client tu choi ket noi va dong ket noi.
-    CLIS(10); // server quyey dinh clinet nao dc danh
+    /**
+     * goi tin chao hoi
+     */
+    HELLO(0),
+    /**
+     * server san sang de tao tro choi
+     */
+    SERVER_SS(1),
+    /**
+     * client san sang choi
+     */
+    SS(2),
+    /**
+     * game bat dau
+     */
+    START(3),
+    /**
+     * client gui nuoc di
+     */
+    HIT(4),
+    /**
+     * server tu choi nuoc di
+     */
+    REFUSE(5),
+    /**
+     * server chap nhan nuoc di
+     */
+    ACCEPT(6),
+    /**
+     * ket thuc game. server gui ket qua tran dau.
+     */
+    GG(7),
+    /**
+     * client tu bo game.
+     */
+    FF(8),
+    /**
+     * client tu choi ket noi va dong ket noi.
+     */
+    REFUSE_2(9),
+    /**
+     * server quyey dinh clinet nao dc danh
+     */
+    CLIS(10),
+    /**
+     *
+     */
+    TABLES(11);
 
     private final int value;
 
