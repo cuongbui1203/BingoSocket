@@ -1,7 +1,7 @@
 import java.util.Arrays;
-
+import java.util.Scanner;;
 public class Player {
-
+    Scanner in ;
     int status;
     public int getStatus() {
         return status;
@@ -15,6 +15,9 @@ public class Player {
     int []addressCheck ;
     int [][]PlayerTable ;
     String name;
+    int n;
+    int point;
+    int maxpoint;
     public String getName() {
         return name;
     }
@@ -25,12 +28,16 @@ public class Player {
     }
 
 
-    Player() {
+    Player(Scanner in) {
+        this.in = in;
         this.name = "";
         this.status = 0;
         this.check = new int[25];
         this.addressCheck =  new int[25];
         this.PlayerTable = BingoTable.RandomTable();
+        this.n = 0;
+        this.point = 0;
+        this.maxpoint = 0;
     }
 
 
@@ -40,44 +47,69 @@ public class Player {
         System.out.println(Arrays.toString(this.PlayerTable[i])); 
     }
 
-
-
-    void move(int n) {
-
-        n--;
+    void nhap() {
+        
+        n = in.nextInt();
+        
+    
         for(int i = 0; i < 5; i++)
         for(int j = 0; j < 5; j++) {
-            if( PlayerTable[i][j] == n && check[n] ==0 ) {
-                check[n]++;
+            if( PlayerTable[i][j] == n && check[n-1] ==0 ) {
+                check[n-1]++;
                 addressCheck[5*i+j]++;
+                
             }
         }
+        //for(int i = 0; i < 25;  i ++)System.out.print(addressCheck[i]);
+        System.out.println("");
+    }
+    int getN(){
+        return n;
+    }
+    void move(int a) {
+
+
+        for(int i = 0; i < 5; i++)
+        for(int j = 0; j < 5; j++) {
+            if( PlayerTable[i][j] == a && check[a-1] ==0 ) {
+                check[a-1]++;
+                addressCheck[5*i+j]++;
+                
+            }
+            
+        }
+       // for(int i = 0; i < 25;  i ++)System.out.print(addressCheck[i]);
+        
     }
     boolean CheckWinCon() {
-        int point = 0;
+        point = 0;
         for(int i = 0; i < 25; i = i + 5) {
             if(addressCheck[i] == 1 && addressCheck[i+1] == 1 &&
                 addressCheck[i+2] == 1 && addressCheck[i+3] == 1 && addressCheck[i+4] == 1 ) {
                     point++;
-                    System.out.println(point);
+                    
                 } }
         for(int i = 0; i < 5; i++) {
             if(addressCheck[i] == 1 && addressCheck[i+5] == 1 &&
                 addressCheck[i+10] == 1 && addressCheck[i+15] == 1 && addressCheck[i+20] == 1 ) {
                     point++;
-                    System.out.println(point);
+                    
+
                 }
         }
         if(addressCheck[0] == 1 && addressCheck[6] == 1 &&
         addressCheck[12] == 1 && addressCheck[18] == 1 && addressCheck[24] == 1 ) {
             point ++;
-            System.out.println(point);
+            
+
         }
         if(addressCheck[4] == 1 && addressCheck[8] == 1 &&
         addressCheck[12] == 1 && addressCheck[16] == 1 && addressCheck[20] == 1 ) {
             point ++;
-            System.out.println(point);
+            
+
         }
+        if(point > maxpoint) maxpoint = point;
         if(point < 5) return false;
             else return true;
     }

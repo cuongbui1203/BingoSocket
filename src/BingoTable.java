@@ -32,11 +32,6 @@ public class BingoTable {
         return arrayList;
 
     }
-    public static void main(String[] args) {
-        System.out.println(RandomArray().toString());
-        System.out.println(RandomArray().toString());
-        System.out.println(RandomArray().toString());
-    }
     /**
      * tạo bảng 5x5 có 25 số sắp xếp ngẫu nhiên từ 1 đến 25
      */
