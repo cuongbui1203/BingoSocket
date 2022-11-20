@@ -15,8 +15,8 @@ Mỗi phần tử của mảng có kiểu: int 4 bytes, little endian
 Type:
 	0: PKT_HELLO
 		- là gói tin đầu tiên trao đổi, bắt buộc phải có
-			- data theo sau là string chứa mã sinh viên (bắt buộc)
-			- độ dài của mã sinh viên chứa trong trường len.
+			- data theo sau là string chứa pass (bắt buộc)
+			- độ dài của pass chứa trong trường len.
 
 	1: PKT_SERVER_SS
 		gói tin được server gửi khi server đã sẵn sàng.

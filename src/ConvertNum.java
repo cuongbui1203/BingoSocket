@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.xml.crypto.KeySelector.Purpose;
 
-public class ConverNum {
+public class ConvertNum {
 
     public static byte[] reverse(byte[] bytes) {
         int i;

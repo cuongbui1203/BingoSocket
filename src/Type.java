@@ -1,5 +1,9 @@
 public enum Type {
     /**
+     * null
+     */
+    NULL(-1),
+    /**
      * goi tin chao hoi
      */
     HELLO(0),

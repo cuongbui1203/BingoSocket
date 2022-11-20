@@ -9,44 +9,29 @@ import java.util.Arrays;
 public class ServerSend {
 
     private static void addPayload(ArrayList<Byte> sendPayload, int value) {
-        sendPayload.addAll(Arrays.asList(ConverNum.toObjects(ConverNum.reverse(ConverNum.intToByteArray(value)))));
+        sendPayload.addAll(Arrays.asList(ConvertNum.toObjects(ConvertNum.reverse(ConvertNum.intToByteArray(value)))));
     }
-
-    // private String createFlag(String msv) {
-    // int leftLimit = 48; // numeral '0'
-    // int rightLimit = 122; // letter 'z'
-    // int targetStringLength = 50; // limit
-    // Random random = new Random();
-    // String hashMsv = Base64.getEncoder().encodeToString(msv.getBytes());
-    // String flag = random.ints(leftLimit, rightLimit + 1)
-    // .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-    // .limit(targetStringLength)
-    // .collect(StringBuilder::new, StringBuilder::appendCodePoint,
-    // StringBuilder::append)
-    // .toString();
-    // return flag + hashMsv;
-    // }
 
     private static void addPayload(ArrayList<Byte> sendPayload, String value) {
-        sendPayload.addAll(Arrays.asList(ConverNum.toObjects(value.getBytes(StandardCharsets.UTF_8))));
+        sendPayload.addAll(Arrays.asList(ConvertNum.toObjects(value.getBytes(StandardCharsets.UTF_8))));
     }
 
-    public static void write(Socket socket, int type, int len) throws IOException {
+    public static void write(Socket socket, Type type, int len) throws IOException {
         write(socket, type, len, "");
     }
 
-    public static void write(Socket socket, int type, int len, int data) throws IOException {
+    public static void write(Socket socket, Type type, int len, int data) throws IOException {
         ArrayList<Byte> sendPayload = new ArrayList<>();
-        addPayload(sendPayload, type);
+        addPayload(sendPayload, type.getValue());
         addPayload(sendPayload, len);
         addPayload(sendPayload, data);
         write(socket.getOutputStream(), sendPayload);
 
     }
 
-    public static void write(Socket socket, int type, int len, Number[][] data) throws IOException {
+    public static void write(Socket socket, Type type, int len, Number[][] data) throws IOException {
         ArrayList<Byte> sendPayload = new ArrayList<>();
-        addPayload(sendPayload, type);
+        addPayload(sendPayload, type.getValue());
         addPayload(sendPayload, len);
         for (int y = 0; y < 5; y++) {
             for (int x = 0; x < 5; x++) {
@@ -69,10 +54,10 @@ public class ServerSend {
         write(socket.getOutputStream(), sendPayload);
     }
 
-    public static void write(Socket socket, int type, int len, String data) throws IOException {
+    public static void write(Socket socket, Type type, int len, String data) throws IOException {
         // System.out.println(type);
         ArrayList<Byte> sendPayload = new ArrayList<>();
-        addPayload(sendPayload, type);
+        addPayload(sendPayload, type.getValue());
         addPayload(sendPayload, len);
         if (len > 0) {
             addPayload(sendPayload, data);
@@ -81,7 +66,7 @@ public class ServerSend {
     }
 
     private static void write(OutputStream outputStream, ArrayList<Byte> sendPayload) throws IOException {
-        outputStream.write(ConverNum.toPrimitives(sendPayload.toArray()));
+        outputStream.write(ConvertNum.toPrimitives(sendPayload.toArray()));
         outputStream.flush();
     }
 
