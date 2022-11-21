@@ -16,8 +16,8 @@ public class ServerSend {
         sendPayload.addAll(Arrays.asList(ConvertNum.toObjects(value.getBytes(StandardCharsets.UTF_8))));
     }
 
-    public static void write(Socket socket, Type type, int len) throws IOException {
-        write(socket, type, len, "");
+    public static void write(Socket socket, Type type) throws IOException {
+        write(socket, type, 0, "");
     }
 
     public static void write(Socket socket, Type type, int len, int data) throws IOException {
@@ -43,10 +43,10 @@ public class ServerSend {
 
     }
 
-    public static void write(Socket socket, int type, int len, ArrayList<Integer> data) throws IOException {
+    public static void write(Socket socket, Type type, int len, ArrayList<Integer> data) throws IOException {
         // System.out.println(type);
         ArrayList<Byte> sendPayload = new ArrayList<>();
-        addPayload(sendPayload, type);
+        addPayload(sendPayload, type.getValue());
         addPayload(sendPayload, len);
         for (int i = 0; i < len; i++) {
             addPayload(sendPayload, data.get(i));

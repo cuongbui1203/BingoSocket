@@ -44,25 +44,23 @@ public enum Type {
      */
     REFUSE_2(9),
     /**
-     * server quyey dinh clinet nao dc danh
+     * server quyet dinh client nao dc danh
      */
     CLIS(10),
     /**
-     *
+     * send information of player table
      */
-    TABLES(11);
+    TABLES(11),
+    /**
+     * send score to client.
+     */
+    SCORE(12);
 
     private final int value;
 
     Type(int value) {
         this.value = value;
     }
-
-    // public static Optional<Type> valueOf(int value) {
-    // return Arrays.stream(values())
-    // .filter(type -> type.value == value)
-    // .findFirst();
-    // }
 
     public int getValue() {
         return value;

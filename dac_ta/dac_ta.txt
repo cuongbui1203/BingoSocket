@@ -15,11 +15,11 @@ Mỗi phần tử của mảng có kiểu: int 4 bytes, little endian
 Type:
 	0: PKT_HELLO
 		- là gói tin đầu tiên trao đổi, bắt buộc phải có
-			- data theo sau là string chứa pass (bắt buộc)
+			- data theo sau là string chứa pass (bắt buộc).
 			- độ dài của pass chứa trong trường len.
 
 	1: PKT_SERVER_SS
-		gói tin được server gửi khi server đã sẵn sàng.
+		gói tin được server gửi khi server chấp nhận clinet.
 		độ dài trường len là 0.
 
 	2: PKT_SS
@@ -32,8 +32,8 @@ Type:
 
 	4: PKT_HIT
 		- clinet sẽ gửi các nước đi của mình qua gói tin này
-			- trường len có giá trị bằng 1
-			- data theo sau gồm 3 số theo thứ tự là x. 
+			- trường len có giá trị bằng 4
+			- data theo sau gồm 1 số theo thứ tự là x. 
 				x là số được đánh ra. Có giá trị trong khoảng 1 - 25.
 
 	5: PKT_REFUSE
@@ -42,22 +42,19 @@ Type:
 
 	6: PKT_ACCEPT
 		gửi gói tin này khi chấp nhận nước đi dc gửi tới đồng thời gửi trạng thái bàn cờ của client về.
-		trường len có dộ dài là 25
-		mảng data kèm theo là trạng thái bàn cờ của cilent.
-		mỗi phần tử của mảng gồm 2 số nguyên a b
-			a: giá trị tại ô đó
-			b: trạng thái ô đó
-				-0: chưa chọn
-				-1: đã chọn
+		trường len có dộ dài là 100
+		data kèm theo là mảng check. Để xác định nước nào đc đánh.
+		mỗi phần tử của mảng có kiểu: int 4 bytes, little endian
 
 	7: PKT_GG
 		khi trò chơi kết thúc server sẽ gửi gói tin này
-		trường data có giá trị bằng 1.
+		trường data có giá trị bằng 4.
 		data kèm theo gồm 1 số: 
 			- 1: thắng
 			- 0: thua
 	8: PKT_FF
 		gói tin được gửi khi người chơi muốn kết thúc trò chơi. Và bị xử thua.
+		trường len có giá trị bằng 0.
 
 	9: PKT_REFUSE_2:
 		được server gửi khi nhận được gói tin không đúng format 
@@ -68,3 +65,12 @@ Type:
 		trường len có giá trị bằng 1
 			- 0: không được đánh
 			- 1: được đánh
+	11: PKT_TABLES: 
+		server gửi thông tin bàn cờ cho client.
+		trường len có giá trị là 100
+		data kèm theo là mảng 25 số là vị trí của các số.
+		mỗi phần từ của mảng: int 4 bytes, little endian
+	12: PKT_SCORE:
+		server gửi điểm cho client.
+		trường len có giá trị là 4.
+		data kèm theo là điểm hiện tại của client.

@@ -1,18 +1,10 @@
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;;
 
 public class Player {
     Scanner in;
     int status;
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
     int[] check;
     int[] addressCheck;
     int[][] PlayerTable;
@@ -21,15 +13,7 @@ public class Player {
     int point;
     int maxpoint;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    Player(Scanner in) {
+    public Player(Scanner in) {
         this.in = in;
         this.name = "";
         this.status = 0;
@@ -39,6 +23,55 @@ public class Player {
         this.n = 0;
         this.point = 0;
         this.maxpoint = 0;
+    }
+
+    public Player() {
+        this.in = null;
+        this.name = "";
+        this.status = 0;
+        this.check = new int[25];
+        this.addressCheck = new int[25];
+        this.PlayerTable = BingoTable.RandomTable();
+        this.n = 0;
+        this.point = 0;
+        this.maxpoint = 0;
+    }
+
+    public ArrayList<Integer> getPlayerTable() {
+        ArrayList<Integer> res = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            for (int t = 0; t < 5; t++) {
+                res.add(PlayerTable[i][t]);
+            }
+        }
+        return res;
+    }
+
+    public ArrayList<Integer> getCheckTable() {
+        ArrayList<Integer> res = new ArrayList<>();
+        for (int i : check)
+            res.add(i);
+        return res;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getScore() {
+        return 0;
     }
 
     void printTable() {
@@ -67,6 +100,10 @@ public class Player {
                 }
         }
         // for(int i = 0; i < 25; i ++)System.out.print(addressCheck[i]);
+    }
+
+    public boolean checkMove(int n) {
+        return check[n - 1] == 0;
     }
 
     public int getN() {
