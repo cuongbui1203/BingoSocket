@@ -22,54 +22,56 @@ Type:
 		gói tin được server gửi khi server chấp nhận clinet.
 		độ dài trường len là 0.
 
-	2: PKT_SS
-		gói tin được client gửi khi đã sẵn sàng chơi.
-		độ dài trường len là 0.
-
-	3: PKT_START 
+	2: PKT_START 
 		gói tin do sever gửi cho các client để thông báo game đã bắt đầu.
 		độ dài trường len bằng 0
 
-	4: PKT_HIT
+	3: PKT_HIT
 		- clinet sẽ gửi các nước đi của mình qua gói tin này
 			- trường len có giá trị bằng 4
 			- data theo sau gồm 1 số theo thứ tự là x. 
 				x là số được đánh ra. Có giá trị trong khoảng 1 - 25.
 
-	5: PKT_REFUSE
+	4: PKT_REFUSE
 		gói tin từ chối do đánh số trùng nhau hoặc đánh vào ô đã được đánh trước đó.
 		yêu cầu client gửi lại nước đi
 
-	6: PKT_ACCEPT
+	5: PKT_ACCEPT
 		gửi gói tin này khi chấp nhận nước đi dc gửi tới đồng thời gửi trạng thái bàn cờ của client về.
 		trường len có dộ dài là 100
 		data kèm theo là mảng check. Để xác định nước nào đc đánh.
 		mỗi phần tử của mảng có kiểu: int 4 bytes, little endian
 
-	7: PKT_GG
+	6: PKT_GG
 		khi trò chơi kết thúc server sẽ gửi gói tin này
 		trường data có giá trị bằng 4.
 		data kèm theo gồm 1 số: 
 			- 1: thắng
 			- 0: thua
-	8: PKT_FF
+	7: PKT_FF
 		gói tin được gửi khi người chơi muốn kết thúc trò chơi. Và bị xử thua.
 		trường len có giá trị bằng 0.
 
-	9: PKT_REFUSE_2:
+	8: PKT_REFUSE_2:
 		được server gửi khi nhận được gói tin không đúng format 
 		kết thúc kết nối.
 
-	10: PKT_CLIS:
+	9: PKT_CLIS:
 		server gửi gói tin cho clinet để quyết định quyền được đánh.
 		trường len có giá trị bằng 1
 			- 0: không được đánh
 			- 1: được đánh
-	11: PKT_TABLES: 
+	10: PKT_TABLES: 
 		server gửi thông tin bàn cờ cho client.
 		trường len có giá trị là 100
 		data kèm theo là mảng 25 số là vị trí của các số.
 		mỗi phần từ của mảng: int 4 bytes, little endian
+	11: PKT CHECK TABLES 
+		server gửi thông tin mảng check cho client.
+		trường len có giá trị là 100.
+		data kèm theo là mảng 25 số là trạng thái đã đánh hay chưa của từng số.
+		k liên quan đến vị trí.
+		mỗi phần từ của mảng: int 4 bytes, little endian.
 	12: PKT_SCORE:
 		server gửi điểm cho client.
 		trường len có giá trị là 4.

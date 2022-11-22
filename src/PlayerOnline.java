@@ -48,6 +48,7 @@ public class PlayerOnline {
         this.hit = new AtomicInteger(-1);
         this.thread = new Thread(new Process());
         this.player = new Player();
+        this.player.setName(socket.getInetAddress().getHostAddress());
     }
 
     public ArrayList<Integer> getPlayerTable() {
@@ -55,6 +56,7 @@ public class PlayerOnline {
     }
 
     public void move() throws IOException {
+        System.out.println("player " + player.getName() + " hit");
         hit.set(0);
         byte[] payload = new byte[100];
         iStream.read(payload);
@@ -87,7 +89,7 @@ public class PlayerOnline {
         return activate.get();
     }
 
-    public int getSocre() {
+    public int getScore() {
         return player.getScore();
     }
 

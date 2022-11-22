@@ -10,7 +10,7 @@ public class Player {
     int[][] PlayerTable;
     String name;
     int n;
-    int point;
+    // int point;
     int maxpoint;
 
     public Player(Scanner in) {
@@ -21,7 +21,7 @@ public class Player {
         this.addressCheck = new int[25];
         this.PlayerTable = BingoTable.RandomTable();
         this.n = 0;
-        this.point = 0;
+        // this.point = 0;
         this.maxpoint = 0;
     }
 
@@ -33,7 +33,7 @@ public class Player {
         this.addressCheck = new int[25];
         this.PlayerTable = BingoTable.RandomTable();
         this.n = 0;
-        this.point = 0;
+        // this.point = 0;
         this.maxpoint = 0;
     }
 
@@ -71,7 +71,7 @@ public class Player {
     }
 
     public int getScore() {
-        return 0;
+        return maxpoint;
     }
 
     void printTable() {
@@ -128,7 +128,7 @@ public class Player {
     }
 
     boolean CheckWinCon() {
-        point = 0;
+        int point = 0;
         for (int i = 0; i < 25; i = i + 5) {
             if (addressCheck[i] == 1 && addressCheck[i + 1] == 1 &&
                     addressCheck[i + 2] == 1 && addressCheck[i + 3] == 1 && addressCheck[i + 4] == 1) {

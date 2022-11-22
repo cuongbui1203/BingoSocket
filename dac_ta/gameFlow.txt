@@ -1,0 +1,36 @@
+sever start
+
+accept p1
+
+accept p2
+
+send sever ready to p1
+send sever ready to p2
+
+send game start to p1
+send game start to p2
+
+send game table to p1
+send game table to p2
+
+lood main
+
+send player hit
+send player no hit
+
+recive num player hit
+
+send check table p1 to p1
+send check table p2 to p2
+
+send score p1 to p1
+send score p2 to p2
+
+end loop
+
+send information match to p1
+send information match to p2
+
+disconnect p1
+disconnect p2
+

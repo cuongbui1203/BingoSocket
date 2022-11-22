@@ -85,36 +85,26 @@ public class Server {
         return res;
     }
 
-    public void process() {
+    public void start() {
         // boolean running = true;
         try {
             // add player
             // them nguoi choi 1
-            sockets.add(server.accept());
-            PKT_HELLO(sockets.get(0));
-            ServerSend.write(pList.get(0).getSocket(), Type.SERVER_SS);
-            System.out.println("gui thong bao sever san sang cho p1");
-
+            pList.add(new PlayerOnline(server.accept()));
+            PKT_HELLO(pList.get(0).getSocket());
+            System.out.println("connected " + pList.get(0).getSocket().getInetAddress().getHostAddress());
             // them nguoi choi 2
-            sockets.add(server.accept());
-            PKT_HELLO(sockets.get(1));
+            pList.add(new PlayerOnline(server.accept()));
+            PKT_HELLO(pList.get(1).getSocket());
+            System.out.println("connected " + pList.get(1).getSocket().getInetAddress().getHostAddress());
 
             // sever da san sang
             // ServerSend.write(sockets.get(0), Type.SERVER_SS, 0);
             // ServerSend.write(sockets.get(1), Type.SERVER_SS, 0);
+            ServerSend.write(pList.get(0).getSocket(), Type.SERVER_SS);
+            System.out.println("gui thong bao sever san sang cho p1");
             ServerSend.write(pList.get(1).getSocket(), Type.SERVER_SS);
             System.out.println("gui thong bao sever san sang cho p2");
-
-            // doi client san sang
-            pList.get(0).setActivate(true);
-            pList.get(1).setActivate(false);
-            // System.out.println("");
-
-            // luong cho 2 nguoi choi san sang
-
-            // doi tin hieu ss
-
-            // khoi tao game choi
 
             // cac bien can thiet
             boolean gameEnd = false;
@@ -151,8 +141,8 @@ public class Server {
                 ServerSend.write(pList.get(1).getSocket(), Type.TABLES, 25, p2.getPlayerTable());
 
                 // send Score cho 2 player
-                ServerSend.write(pList.get(0).getSocket(), Type.SCORE, 1, pList.get(0).getSocre());
-                ServerSend.write(pList.get(1).getSocket(), Type.SCORE, 1, pList.get(1).getSocre());
+                ServerSend.write(pList.get(0).getSocket(), Type.SCORE, 1, pList.get(0).getScore());
+                ServerSend.write(pList.get(1).getSocket(), Type.SCORE, 1, pList.get(1).getScore());
 
                 // doi vai tro 2 player
                 {
@@ -170,7 +160,7 @@ public class Server {
 
     }
 
-    // public void process(String pass) {
+    // public void start(String pass) {
 
     // try {
 
@@ -273,6 +263,6 @@ public class Server {
     // }
 
     public static void main(String[] args) {
-        new Server().process();
+        new Server().start();
     }
 }

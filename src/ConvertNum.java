@@ -1,10 +1,4 @@
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.xml.crypto.KeySelector.Purpose;
 
 public class ConvertNum {
 
@@ -28,7 +22,7 @@ public class ConvertNum {
     public static final byte[] intToByteArray(int value) {
         byte[] res;
         res = new byte[] { (byte) (value >>> 24), (byte) (value >>> 16), (byte) (value >>> 8), (byte) value };
-        // reverse(res);
+        reverse(res);
         return res;
     }
 
@@ -38,7 +32,7 @@ public class ConvertNum {
         return result;
     }
 
-    public static final byte[] numbertoByteArray(Number val) {
+    public static final byte[] numberToByteArray(Number val) {
         return concatArray(intToByteArray(val.num), intToByteArray(val.check));
     }
 
