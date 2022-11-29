@@ -1,3 +1,5 @@
+package Sever;
+
 public enum Type {
     /**
      * null

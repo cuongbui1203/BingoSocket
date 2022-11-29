@@ -1,31 +1,35 @@
+package Sever;
+
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import javax.swing.text.html.HTMLDocument.HTMLReader.SpecialAction;
+
+import Logic.ConvertNum;
+import Logic.Player;
 
 public class Server {
     private final static int PORT = 1234;
     private final static String HOST = "0.0.0.0";
 
     private ServerSocket server = null;
-    private ArrayList<Socket> sockets = null;
-    private boolean running;
     private ArrayList<PlayerOnline> pList = null;
     private Player p1, p2;
 
     public Server() {
         p1 = new Player();
         p2 = new Player();
-        running = false;
         try {
             server = new ServerSocket();
             server.bind(new InetSocketAddress(InetAddress.getByName(HOST), PORT));
-            System.out.println(server.toString());
-            sockets = new ArrayList<>();
+            System.out.println("Sever start" + server.toString());
             pList = new ArrayList<>();
         } catch (IOException e) {
             // TODO Auto-generated catch block
@@ -145,19 +149,16 @@ public class Server {
                 ServerSend.write(pList.get(1).getSocket(), Type.SCORE, 1, pList.get(1).getScore());
 
                 // doi vai tro 2 player
-                {
-                    int tg = idPlayerHit;
-                    idPlayerHit = idPlayerNoHit;
-                    idPlayerNoHit = tg;
-                }
+
+                int tg = idPlayerHit;
+                idPlayerHit = idPlayerNoHit;
+                idPlayerNoHit = tg;
 
             }
 
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
-
     }
 
     // public void start(String pass) {
@@ -255,6 +256,23 @@ public class Server {
 
     // }
 
+    // } catch (IOException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
+    // }
+
+    // }
+
+    // private void connectToWeb() {
+    // String host = "104.194.240.16";
+    // int port = 8881;
+    // try {
+    // Socket socket = new Socket(host, port);
+    // byte[] payload = ConvertNum.intToByteArray(1);
+
+    // } catch (UnknownHostException e) {
+    // // TODO Auto-generated catch block
+    // e.printStackTrace();
     // } catch (IOException e) {
     // // TODO Auto-generated catch block
     // e.printStackTrace();

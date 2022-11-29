@@ -1,3 +1,8 @@
+package Logic;
+
+import java.io.ByteArrayOutputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class ConvertNum {
@@ -20,13 +25,19 @@ public class ConvertNum {
     }
 
     public static final byte[] intToByteArray(int value) {
-        byte[] res;
-        res = new byte[] { (byte) (value >>> 24), (byte) (value >>> 16), (byte) (value >>> 8), (byte) value };
-        reverse(res);
-        return res;
+        try {
+            ByteArrayOutputStream b = new ByteArrayOutputStream();
+            DataOutputStream d = new DataOutputStream(b);
+            d.writeInt(value);
+            d.flush();
+            return reverse(b.toByteArray());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
-    private static byte[] concatArray(byte[] array1, byte[] array2) {
+    public static byte[] concatArray(byte[] array1, byte[] array2) {
         byte[] result = Arrays.copyOf(array1, array1.length + array2.length);
         System.arraycopy(array2, 0, result, array1.length, array2.length);
         return result;

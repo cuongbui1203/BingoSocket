@@ -1,3 +1,5 @@
+package Sever;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
@@ -5,6 +7,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 // import java.util.Random;
+
+import Logic.ConvertNum;
+import Logic.Number;
 
 public class ServerSend {
 

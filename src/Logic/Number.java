@@ -1,3 +1,5 @@
+package Logic;
+
 public class Number {
     public int num, check;
 
