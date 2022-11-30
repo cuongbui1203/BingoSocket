@@ -105,7 +105,10 @@ public class Player {
     }
 
     public boolean checkMove(int n) {
-        return check[n - 1] == 0;
+        if (n > 0 && n < 26) {
+            return check[n - 1] == 0;
+        } else
+            return false;
     }
 
     public int getN() {
@@ -129,7 +132,7 @@ public class Player {
 
     }
 
-    boolean CheckWinCon() {
+    public boolean CheckWinCon() {
         int point = 0;
         for (int i = 0; i < 25; i = i + 5) {
             if (addressCheck[i] == 1 && addressCheck[i + 1] == 1 &&

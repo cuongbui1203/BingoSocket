@@ -1,4 +1,4 @@
-package Sever;
+package Server;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,6 +22,7 @@ public class PlayerOnline {
     private AtomicBoolean gameStart;
     private AtomicBoolean activate;
     private AtomicInteger hit;
+    private int hit2;
     private Player player;
 
     private class Process implements Runnable {
@@ -52,11 +53,16 @@ public class PlayerOnline {
         this.hit = new AtomicInteger(-1);
         this.thread = new Thread(new Process());
         this.player = new Player();
-        this.player.setName(socket.getInetAddress().toString());
+        this.player.setName(socket.toString());
+        this.hit2 = 0;
     }
 
     public ArrayList<Integer> getPlayerTable() {
         return player.getPlayerTable();
+    }
+
+    public ArrayList<Integer> getCheckTable() {
+        return player.getCheckTable();
     }
 
     public void move() throws IOException {
@@ -64,22 +70,25 @@ public class PlayerOnline {
         hit.set(0);
         byte[] payload = new byte[100];
         // iStream.read(payload);
-        int type = ConvertNum.fromByteArray(Arrays.copyOfRange(payload, 0, 4));
+        // int type = ConvertNum.fromByteArray(Arrays.copyOfRange(payload, 0, 4));
         do {
             iStream.read(payload);
-            type = ConvertNum.fromByteArray(Arrays.copyOfRange(payload, 0, 4));
+            int type = ConvertNum.fromByteArray(Arrays.copyOfRange(payload, 0, 4));
             hit.set(ConvertNum.fromByteArray(Arrays.copyOfRange(payload, 8, 12)));
+            hit2 = ConvertNum.fromByteArray(Arrays.copyOfRange(payload, 8, 12));
 
             if (type != Type.HIT.getValue() || !player.checkMove(hit.get())) {
                 ServerSend.write(socket, Type.REFUSE);
             } else {
                 player.move(hit.get());
+
                 break;
             }
         } while (true);
     }
 
     public void move(int n) {
+
         player.move(n);
     }
 
@@ -107,7 +116,11 @@ public class PlayerOnline {
     public int getHit() {
         int res = hit.get();
         hit.set(-1);
-        return res;
+        return hit2;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 
 }

@@ -1,4 +1,4 @@
-package Sever;
+package Server;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -21,11 +21,11 @@ public class Server {
 
     private ServerSocket server = null;
     private ArrayList<PlayerOnline> pList = null;
-    private Player p1, p2;
+    PlayerOnline p1;
+    private PlayerOnline p2;
 
     public Server() {
-        p1 = new Player();
-        p2 = new Player();
+
         try {
             server = new ServerSocket();
             server.bind(new InetSocketAddress(InetAddress.getByName(HOST), PORT));
@@ -96,13 +96,13 @@ public class Server {
             // them nguoi choi 1
             pList.add(new PlayerOnline(server.accept()));
             PKT_HELLO(pList.get(0).getSocket());
-            System.out.println("connected " + pList.get(0).getSocket().getInetAddress().getHostAddress());
+            System.out.println("player 1 connected " + pList.get(0).getSocket().getInetAddress().getHostAddress());
+            p1 = pList.get(0);
             // them nguoi choi 2
             pList.add(new PlayerOnline(server.accept()));
             PKT_HELLO(pList.get(1).getSocket());
-            System.out.println("connected " +
-                    pList.get(1).getSocket().getInetAddress().getHostAddress());
-
+            System.out.println("player 2 connected " + pList.get(1).getSocket().getInetAddress().getHostAddress());
+            p2 = pList.get(1);
             // sever da san sang
             // ServerSend.write(sockets.get(0), Type.SERVER_SS, 0);
             // ServerSend.write(sockets.get(1), Type.SERVER_SS, 0);
@@ -113,7 +113,6 @@ public class Server {
 
             // cac bien can thiet
             boolean gameEnd = false;
-            int z;
             int idPlayerHit = 0, idPlayerNoHit = 1;
             // thong bao game bat dau
             ServerSend.write(pList.get(0).getSocket(), Type.START);
@@ -125,43 +124,50 @@ public class Server {
             // gui ban co cho 2 ng choi
             ServerSend.write(pList.get(0).getSocket(), Type.TABLES, 25, p1.getPlayerTable());
             System.out.println("gui ban co cho p1.\n" + p1.getPlayerTable().toString());
-            ServerSend.write(pList.get(1).getSocket(), Type.TABLES, 25,
-                    p2.getPlayerTable());
+            ServerSend.write(pList.get(1).getSocket(), Type.TABLES, 25, p2.getPlayerTable());
             System.out.println("gui ban co cho p2.\n" + p2.getPlayerTable().toString());
-
             // game loop
-            while (!gameEnd) {
-                pList.get(idPlayerHit).setActivate(true);
-                pList.get(idPlayerNoHit).setActivate(false);
+            while (p1.getPlayer().CheckWinCon() == false && p2.getPlayer().CheckWinCon() == false) {
+                // pList.get(idPlayerHit).setActivate(true);
+                // pList.get(idPlayerNoHit).setActivate(false);
+                gameEnd = (p1.getPlayer().CheckWinCon() || p2.getPlayer().CheckWinCon());
                 // gui yeu cau danh cho ng choi danh o luot nay
                 ServerSend.write(pList.get(idPlayerHit).getSocket(), Type.CLIS, 1, 1);
                 // gui yeu cau k danh cho ng choi k danh o luot nay
-                ServerSend.write(pList.get(idPlayerNoHit).getSocket(), Type.CLIS, 1, 0);
+                // ServerSend.write(pList.get(idPlayerNoHit).getSocket(), Type.CLIS, 1, 2);
 
                 // nhận số đánh của client
                 pList.get(idPlayerHit).move();
                 pList.get(idPlayerNoHit).move(pList.get(idPlayerHit).getHit());
+                // ServerSend.write(pList.get(idPlayerNoHit), Type.TABLES,1,);
 
-                // send information check table
-                ServerSend.write(pList.get(0).getSocket(), Type.TABLES, 25,
-                        p1.getPlayerTable());
-                ServerSend.write(pList.get(1).getSocket(), Type.TABLES, 25,
-                        p2.getPlayerTable());
+                // send hit
+                ServerSend.write(pList.get(idPlayerNoHit).getSocket(), Type.HIT, 1, pList.get(idPlayerHit).getHit());
+                // ServerSend.write(pList.get(1).getSocket(), Type.TABLES, 25,
+                // p2.getCheckTable());
 
                 // send Score cho 2 player
-                ServerSend.write(pList.get(0).getSocket(), Type.SCORE, 1,
-                        pList.get(0).getScore());
-                ServerSend.write(pList.get(1).getSocket(), Type.SCORE, 1,
-                        pList.get(1).getScore());
+                // ServerSend.write(pList.get(0).getSocket(), Type.SCORE, 1,
+                // pList.get(0).getScore());
+                // ServerSend.write(pList.get(1).getSocket(), Type.SCORE, 1,
+                // pList.get(1).getScore());
 
                 // doi vai tro 2 player
 
                 int tg = idPlayerHit;
                 idPlayerHit = idPlayerNoHit;
                 idPlayerNoHit = tg;
-
             }
 
+            if (pList.get(idPlayerNoHit).getPlayer().CheckWinCon()) {
+                ServerSend.write(pList.get(idPlayerNoHit).getSocket(), Type.GG, 1, 1);
+                ServerSend.write(pList.get(idPlayerHit).getSocket(), Type.GG, 1, 0);
+            } else {
+                ServerSend.write(pList.get(idPlayerNoHit).getSocket(), Type.GG, 1, 0);
+                ServerSend.write(pList.get(idPlayerHit).getSocket(), Type.GG, 1, 1);
+            }
+            ServerSend.write(p1.getSocket(), Type.SCORE, 1, p1.getScore());
+            ServerSend.write(p2.getSocket(), Type.SCORE, 1, p2.getScore());
         } catch (IOException e) {
             e.printStackTrace();
         }

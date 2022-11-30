@@ -3,6 +3,7 @@ import struct
 a = [1, 9, b'127.0.0.5', 8081, 4, b'game', 10, b'aaaaaaaaaa', 4, b'copv']
 pack = struct.pack(f'ii{a[1]}s', a[0], a[1], a[2])+struct.pack(f'ii{a[4]}s', a[3],
                                                                a[4], a[5])+struct.pack(f'i{a[6]}s', a[6], a[7])+struct.pack(f'i{a[8]}s', a[8], a[9])
+print(pack)
 tt = pack
 
 
@@ -12,4 +13,3 @@ async def hello():
         msg = await websocket.recv()
         print(msg)
         asyncio.run(hello())
-print(pack)

@@ -3,11 +3,11 @@ import struct
 
 
 sever = socket.socket()
-try:
-    sever.bind(('127.0.0.1', 8881))
-except:
-    sever.shutdown(1)
-    # pass
+# try:
+sever.bind(('127.0.0.1', 8881))
+# except:
+# sever.shutdown(1)
+# pass
 sever.listen(10)
 con, add = sever.accept()
 print(add)
@@ -53,6 +53,7 @@ if pack is not None:
             author = struct.unpack(
                 f'{lenAuthor}s', pack[index:index + lenAuthor])[0].decode()
             print(author)
+            con.send(p32(1))
 
     except:
         pass
