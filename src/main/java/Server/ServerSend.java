@@ -10,6 +10,7 @@ import java.util.Arrays;
 
 import Logic.ConvertNum;
 import Logic.Number;
+import Server.websocket.server.Type;
 
 public class ServerSend {
 

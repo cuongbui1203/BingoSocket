@@ -1,4 +1,4 @@
-package Sever;
+package Server.websocket.server;
 
 public enum Type {
     /**
@@ -56,7 +56,11 @@ public enum Type {
     /**
      * send score to client.
      */
-    SCORE(12);
+    SCORE(12),
+    /**
+     * send score to client.
+     */
+    HITTED(13);
 
     private final int value;
 

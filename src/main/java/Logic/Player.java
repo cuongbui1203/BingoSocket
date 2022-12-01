@@ -38,6 +38,17 @@ public class Player {
         // this.point = 0;
         this.maxpoint = 0;
     }
+    public Player(String name) {
+        this.in = null;
+        this.name = name;
+        this.status = 0;
+        this.check = new int[25];
+        this.addressCheck = new int[25];
+        this.PlayerTable = BingoTable.RandomTable();
+        this.n = 0;
+        // this.point = 0;
+        this.maxpoint = 0;
+    }
 
     public ArrayList<Integer> getPlayerTable() {
         ArrayList<Integer> res = new ArrayList<>();

@@ -1,0 +1,9 @@
+gói tin được gửi theo định dạnh json
+
+gói tin sẽ gồm
+	data: DataSend
+	type: string
+DataSend
+	int type
+	int select
+	Array int datatable

@@ -27,6 +27,7 @@ public class Game {
     }
 
     static void Play() {
+
         while (player1.CheckWinCon() == false && player2.CheckWinCon() == false) {
 
             // System.out.println(player1.getStatus()+" "+player2.getStatus());

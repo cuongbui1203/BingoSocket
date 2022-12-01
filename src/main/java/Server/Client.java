@@ -2,11 +2,11 @@ package Server;
 
 import java.io.IOException;
 import java.net.Socket;
-import java.security.Principal;
 import java.util.Arrays;
 import java.util.Scanner;
 
 import Logic.ConvertNum;
+import Server.websocket.server.Type;
 
 public class Client {
     static final String SERVER_HOST = "0.0.0.0";
