@@ -1,3 +1,6 @@
+import random
+
+
 class Team:
     def __init__(self, id) -> None:
         self.id = id
@@ -10,10 +13,6 @@ class Match:
         self.b = b
         self.res = -2
 
-
-class MatchTable:
-    def __init__(self) -> None:
-        self.table = []
 
 
 class League:
@@ -48,6 +47,7 @@ class League:
                 for y in range(t+1, 4):
                     self.matchTable[i].append(
                         Match(self.teamTable[i][t], self.teamTable[i][y]))
+            random.shuffle(self.matchTable[i])
 
     def kqVongBang(self, bang, tran, kq):
         # -1,0,1
@@ -125,8 +125,11 @@ class League:
 arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]
 
 l = League(arr)
-
 l.createTable()
+for i in l.teamTable:
+    print("bang ")
+    for t in i:
+        print(t.id)
 for t in l.matchTable:
     print("bang")
     for i in t:
