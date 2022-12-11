@@ -8,8 +8,11 @@ tt = pack
 
 
 async def hello():
-    async with websockets.connect("ws://localhost:8881") as websocket:
+    async with websockets.connect("ws://104.194.240.16/ws/channels") as websocket:
         await websocket.send(tt)
         msg = await websocket.recv()
         print(msg)
-        asyncio.run(hello())
+        # asyncio.run(hello())
+
+
+hello()

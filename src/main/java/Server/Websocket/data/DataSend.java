@@ -1,6 +1,4 @@
-package Server.websocket.data;
-
-import org.json.simple.JSONObject;
+package Server.Websocket.data;
 
 import java.util.ArrayList;
 

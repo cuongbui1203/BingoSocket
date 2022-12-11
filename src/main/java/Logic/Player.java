@@ -11,6 +11,7 @@ public class Player {
     int[] addressCheck;
     int[][] PlayerTable;
     String name;
+    String id;
     int n;
     // int point;
     int maxpoint;
@@ -25,6 +26,7 @@ public class Player {
         this.n = 0;
         // this.point = 0;
         this.maxpoint = 0;
+        this.id = "";
     }
 
     public Player() {
@@ -36,6 +38,7 @@ public class Player {
         this.PlayerTable = BingoTable.RandomTable();
         this.n = 0;
         // this.point = 0;
+        this.id = "";
         this.maxpoint = 0;
     }
     public Player(String name) {
@@ -47,6 +50,7 @@ public class Player {
         this.PlayerTable = BingoTable.RandomTable();
         this.n = 0;
         // this.point = 0;
+        this.id = "";
         this.maxpoint = 0;
     }
 

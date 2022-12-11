@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import Logic.ConvertNum;
-import Server.websocket.server.Type;
+import Server.Websocket.Server.Type;
 
 public class Server {
     private final static int PORT = 1234;
@@ -290,6 +290,9 @@ public class Server {
     // }
 
     public static void main(String[] args) {
-        new Server().start();
+//        Server.websocket.server.Server server = new Server.websocket.server.Server("pass");
+//        Thread thread = new Thread(server);
+//        thread.start();
+//        while (true){}
     }
 }

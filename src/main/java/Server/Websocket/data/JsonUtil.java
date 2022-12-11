@@ -1,10 +1,8 @@
-package Server.websocket.data;
+package Server.Websocket.data;
 
-import Server.websocket.server.Type;
-import com.google.gson.Gson;
+import Server.Websocket.Server.Type;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.json.simple.JSONValue;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 

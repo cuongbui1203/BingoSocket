@@ -1,10 +1,7 @@
 package Server;
 
 import Logic.Player;
-import Server.websocket.data.DataSend;
-import Server.websocket.data.JsonUtil;
-import Server.websocket.data.Message;
-import Server.websocket.server.Type;
+import Server.Websocket.data.MessageGame;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
@@ -16,7 +13,7 @@ public class GameRunnable extends Thread{
     Player p1,p2;
     Session sessionP1,sessionP2;
 
-    Message message;
+    MessageGame messageGame;
     ArrayList<AtomicBoolean> hit;
     public GameRunnable(Session p1,Session p2){
         sessionP1 = p1;
@@ -25,11 +22,11 @@ public class GameRunnable extends Thread{
         this.p2 = new Player(sessionP2.getId());
         hit.add(new AtomicBoolean(false));
         hit.add(new AtomicBoolean(false));
-        message = null;
+        messageGame = null;
     }
 
-    public void setMessage(Message message) {
-        this.message = message;
+    public void setMessage(MessageGame messageGame) {
+        this.messageGame = messageGame;
     }
 
     private void startGame() throws EncodeException, IOException {

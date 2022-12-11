@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 import Logic.ConvertNum;
-import Server.websocket.server.Type;
+import Server.Websocket.Server.Type;
 
 public class Client {
     static final String SERVER_HOST = "0.0.0.0";

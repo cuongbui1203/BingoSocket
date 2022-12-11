@@ -2,7 +2,7 @@ $(function () {
     // if user is running mozilla then use it's built-in WebSocket
     window.WebSocket = window.WebSocket || window.MozWebSocket;
   
-    var connection = new WebSocket('ws://127.0.0.1:8887/ws/chat');
+    var connection = new WebSocket('ws://127.0.0.1:10637/game/bingo');
   
     connection.onopen = function () {
       // connection is opened and ready to use

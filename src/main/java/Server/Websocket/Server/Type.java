@@ -1,4 +1,4 @@
-package Server.websocket.server;
+package Server.Websocket.Server;
 
 public enum Type {
     /**
@@ -60,7 +60,11 @@ public enum Type {
     /**
      * send score to client.
      */
-    HITTED(13);
+    HITTED(13),
+    /**
+     * điểm trung chuyển python
+     */
+    ECHO_PYTHON(14);
 
     private final int value;
 

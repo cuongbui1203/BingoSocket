@@ -1,15 +1,14 @@
-package Server.websocket.data;
+package Server.Websocket.data;
 
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 @Data
-public class Message {
+public class MessageGame {
     private int type;
     private int select;
-
+    private String pass;
     private ArrayList<Integer> table;
 
     private String sender;

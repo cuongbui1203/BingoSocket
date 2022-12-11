@@ -1,17 +1,20 @@
-package Server.websocket.server;
+package Server.Websocket.Server.Web;
 
-import Logic.Game;
+import org.glassfish.tyrus.server.Server;
+
 
 import javax.websocket.DeploymentException;
 import java.util.Scanner;
 
-public class Server {
-
+public class Server2 {
+    static final int PORT = 12345;
     public static void main(String[] args) {
-        org.glassfish.tyrus.server.Server server = new org.glassfish.tyrus.server.Server("localhost",
-                8887,
-                "/ws",
-                ServerEndpoint.class);
+        Server server = new Server(
+                "0.0.0.0",
+                PORT,
+                "/",
+                ServerEndpoint2.class
+        );
 
         try {
             server.start();

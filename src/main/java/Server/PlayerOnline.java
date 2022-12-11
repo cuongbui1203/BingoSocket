@@ -11,7 +11,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import Logic.ConvertNum;
 import Logic.Player;
-import Server.websocket.server.Type;
+import Server.Websocket.Server.Type;
 
 public class PlayerOnline {
 
