@@ -3,6 +3,7 @@ package Server.Websocket.Server;
 import javax.websocket.DeploymentException;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -47,14 +48,20 @@ public class Server implements Runnable {
         try {
             ServerEndpoint.socket = new Socket("localhost",12346);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println(Arrays.toString(new RuntimeException(e).getStackTrace()));
+
         }
         org.glassfish.tyrus.server.Server server = new org.glassfish.tyrus.server.Server("localhost",
                 10637,
                 "/game",
                 ServerEndpoint.class);
+
+
         try {
             server.start();
+            System.out.println("Player 1 name: "+ServerEndpoint.p1Name);
+            System.out.println("Player 2 name: "+ServerEndpoint.p2Name);
+            System.out.println("Password: "+ServerEndpoint.password);
             System.out.println("Press any key to stop the server..");
             new Scanner(System.in).nextLine();
         } catch (DeploymentException e) {

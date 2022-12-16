@@ -44,8 +44,8 @@ async def ws_web():
     global message_list
     bln_running = True
     # ws_b = websockets.connect("ws://127.0.0.1:12345/")
-    # async with websockets.connect("ws://104.194.240.16/ws/channels/") as ws_b:
-    async with websockets.connect("ws://127.0.0.1:12345/") as ws_b:
+    async with websockets.connect("ws://104.194.240.16/ws/channels/") as ws_b:
+        # async with websockets.connect("ws://127.0.0.1:12345/") as ws_b:
         print(ws_b)
         lenArray = len(message_list)
         sevSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -64,6 +64,7 @@ async def ws_web():
             print('id2: ' + str(obj['id2']))
             objSend = {}
             if obj['result'] == 7:
+                # End
                 objSend = {
                     'result': 3,
                     'id1': obj['id1'],
@@ -71,7 +72,9 @@ async def ws_web():
                     'match': obj['match'],
                     'status': 2
                 }
+                bln_running = False
             elif obj['result'] == 12:
+                # Update Score
                 objSend = {
                     'result': 2,
                     'id1': obj['id1'],
@@ -80,6 +83,7 @@ async def ws_web():
                     'status': 1
                 }
             elif obj['result'] == 3:
+                # Start
                 objSend = {
                     'result': 1,
                     'id1': obj['id1'],

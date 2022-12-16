@@ -10,7 +10,7 @@ import javax.websocket.EndpointConfig;
 public class MessageDecoder implements Decoder.Text<Server.Websocket.Server.Web.Util.Message> {
 
     @Override
-    public void init(final EndpointConfig ctonfig) {
+    public void init(final EndpointConfig config) {
     }
 
     @Override
@@ -24,7 +24,7 @@ public class MessageDecoder implements Decoder.Text<Server.Websocket.Server.Web.
 
         Message message = new Message();
         JSONParser parser=new JSONParser();
-        JSONObject jsonObject = null;
+        JSONObject jsonObject;
         try{
             jsonObject = (JSONObject) parser.parse(textMessage);
         } catch (ParseException e) {

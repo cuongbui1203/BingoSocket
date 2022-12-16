@@ -29,6 +29,7 @@ public class ServerEndpoint {
     static int math = -1;
     static String p1Name;
     static String p2Name;
+    static private int SCORE_P1 = -1,SCORE_P2 = -1;
 
 //    static int
     @OnOpen
@@ -46,22 +47,117 @@ public class ServerEndpoint {
         if (user == null) {
             session.getUserProperties().put("user", messageGame.getSender());
         }
+        user = (String) session.getUserProperties().get("user");
         // thêm người chơi mới vô game nếu điền đúng tên và mật khẩu
+//        if (messageGame.getType() == Type.HELLO.getValue() && !gameStart) {
+//            if (
+//                    messageGame.getPass().equals(password) &&
+//                            (messageGame.getSender().equals(p1Name) || messageGame.getSender().equals(p2Name))
+//            ) {
+//                System.out.printf("%s join to game.%n", user);
+//                peers.add(session);
+//                players.add(new Player(user));
+//                messageGame1.setType(Type.ACCEPT.getValue());
+//                session.getBasicRemote().sendObject(messageGame1);
+//            } else {
+//                messageGame1.setType(Type.REFUSE_2.getValue());
+//                session.getBasicRemote().sendObject(messageGame1);
+//                session.close();
+//            }
+//        }
         if (messageGame.getType() == Type.HELLO.getValue()) {
-            if (
-                    messageGame.getPass().equals(password) &&
-                            (messageGame.getSender().equals(p1Name) || messageGame.getSender().equals(p2Name))
-            ) {
-                System.out.printf("%s join to game.%n", messageGame.getSender());
+
+                System.out.printf("%s join to game.%n", user);
                 peers.add(session);
-                players.add(new Player(messageGame.getSender()));
-            } else {
-                messageGame1.setType(Type.REFUSE_2.getValue());
+                players.add(new Player(user));
+                messageGame1.setType(Type.ACCEPT.getValue());
                 session.getBasicRemote().sendObject(messageGame1);
-                session.close();
+
+        }
+
+
+
+        // xử lý khi game chạy
+        if (gameStart) {
+
+            messageGame1.setSender("Sever");
+            messageGame1.setTable(new ArrayList<>());
+
+            int p_hit = messageGame.getSelect();
+            System.out.printf("%s Hit: %d\n",messageGame.getSender(),p_hit);
+            players.get(hit).move(p_hit);
+            players.get(noHit).move(p_hit);
+            for (Session peer : peers) {
+                if (players.get(noHit).getName().equals(user)) {
+                    messageGame1.setType(Type.HIT.getValue());
+                } else {
+                    messageGame1.setType(Type.ACCEPT.getValue());
+                }
+                messageGame1.setSelect(p_hit);
+                peer.getBasicRemote().sendObject(messageGame1);
+            }
+            int tg = hit;
+            hit = noHit;
+            noHit = tg;
+            // Gửi yêu cầu đánh cho 2 người chơi
+            for (Session peer : peers) {
+                messageGame1.setType(Type.CLIS.getValue());
+                if (players.get(noHit).getName().equals(user)) {
+                    messageGame1.setSelect(0);
+                    System.out.println("Send to "+user);
+                } else {
+                    messageGame1.setSelect(1);
+                }
+                peer.getBasicRemote().sendObject(messageGame1);
+            }
+
+
+            if (players.get(0).CheckWinCon() || players.get(1).CheckWinCon()) {
+                gameStart = false;
+                gameEnd = true;
             }
         }
 
+        if (gameEnd) {
+            // gửi kết qua khi kết thúc trận đấu
+            sendToPySever(Type.GG, players.get(0), players.get(1));
+            MessageGame messageGame2 = new MessageGame();
+            messageGame2.setTable(new ArrayList<>());
+            messageGame1.setType(Type.GG.getValue());
+            messageGame1.setSelect(1); // thang
+            messageGame2.setType(Type.GG.getValue());
+            messageGame2.setSelect(0); // thua
+            for (Session peer : peers) {
+                if (players.get(hit).CheckWinCon()) {
+                    if (players.get(hit).getName().equals(user)) {
+                        peer.getBasicRemote().sendObject(messageGame1);
+                        messageGame1.setType(Type.SCORE.getValue());
+                        messageGame1.setSelect(players.get(hit).getScore());
+                        peer.getBasicRemote().sendObject(messageGame1);
+                    } else {
+                        peer.getBasicRemote().sendObject(messageGame2);
+                        messageGame2.setType(Type.SCORE.getValue());
+                        messageGame2.setSelect(players.get(noHit).getScore());
+                        peer.getBasicRemote().sendObject(messageGame2);
+                    }
+                } else {
+                    if (players.get(noHit).getName().equals(user)) {
+                        peer.getBasicRemote().sendObject(messageGame1);
+                        messageGame1.setType(Type.SCORE.getValue());
+                        messageGame1.setSelect(players.get(noHit).getScore());
+                        peer.getBasicRemote().sendObject(messageGame1);
+                    } else {
+                        peer.getBasicRemote().sendObject(messageGame2);
+                        messageGame2.setType(Type.SCORE.getValue());
+                        messageGame2.setSelect(players.get(hit).getScore());
+                        peer.getBasicRemote().sendObject(messageGame2);
+                    }
+                }
+            }
+
+        } else {
+            sendToPySever(Type.SCORE, players.get(0), players.get(1));
+        }
 
         // khởi tạo game mới
         if (peers.size() == 2 && !gameStart) {
@@ -98,78 +194,6 @@ public class ServerEndpoint {
                 }
             }
         }
-        // xử lý khi game chạy
-        if (gameStart) {
-
-            System.out.println("hit");
-            messageGame1.setSender("Sever");
-            messageGame1.setTable(new ArrayList<>());
-
-            int phit = messageGame.getSelect();
-            System.out.println("hit: " + phit);
-            players.get(hit).move(phit);
-            players.get(noHit).move(phit);
-            for (Session peer : peers) {
-                assert user != null;
-                if (user.equals(players.get(noHit).getName())) {
-                    messageGame1.setType(Type.HIT.getValue());
-                } else {
-                    messageGame1.setType(Type.ACCEPT.getValue());
-                }
-                messageGame1.setSelect(phit);
-                peer.getBasicRemote().sendObject(messageGame1);
-            }
-            int tg = hit;
-            hit = noHit;
-            noHit = tg;
-
-            if (players.get(0).CheckWinCon() || players.get(1).CheckWinCon()) {
-                gameStart = false;
-                gameEnd = true;
-            }
-        }
-
-        if (gameEnd) {
-            sendToPySever(Type.GG, players.get(0), players.get(1));
-            MessageGame messageGame2 = new MessageGame();
-            messageGame2.setTable(new ArrayList<>());
-            messageGame1.setType(Type.GG.getValue());
-            messageGame1.setSelect(1); // thang
-            messageGame2.setType(Type.GG.getValue());
-            messageGame2.setSelect(0); // thua
-            for (Session peer : peers) {
-                if (players.get(hit).CheckWinCon()) {
-                    assert user != null;
-                    if (user.equals(players.get(hit).getName())) {
-                        peer.getBasicRemote().sendObject(messageGame1);
-                        messageGame1.setType(Type.SCORE.getValue());
-                        messageGame1.setSelect(players.get(hit).getScore());
-                        peer.getBasicRemote().sendObject(messageGame1);
-                    } else {
-                        peer.getBasicRemote().sendObject(messageGame2);
-                        messageGame2.setType(Type.SCORE.getValue());
-                        messageGame2.setSelect(players.get(noHit).getScore());
-                        peer.getBasicRemote().sendObject(messageGame2);
-                    }
-                } else {
-                    assert user != null;
-                    if (user.equals(players.get(noHit).getName())) {
-                        peer.getBasicRemote().sendObject(messageGame1);
-                        messageGame1.setType(Type.SCORE.getValue());
-                        messageGame1.setSelect(players.get(noHit).getScore());
-                        peer.getBasicRemote().sendObject(messageGame1);
-                    } else {
-                        peer.getBasicRemote().sendObject(messageGame2);
-                        messageGame2.setType(Type.SCORE.getValue());
-                        messageGame2.setSelect(players.get(hit).getScore());
-                        peer.getBasicRemote().sendObject(messageGame2);
-                    }
-                }
-            }
-
-        } else {
-            sendToPySever(Type.SCORE, players.get(0), players.get(1));
-        }
     }
 
 
@@ -199,22 +223,27 @@ public class ServerEndpoint {
 
     private void sendToPySever(Type type,Player p1,Player p2) throws EncodeException, IOException {
 //        if(pySever == null) return;\
-        Message message = new Message();
-        message.setResult(type.getValue());
-        if(p1.getName().equals(p1Name)) {
-            message.setId1(p1.getScore());
-            message.setId2(p2.getScore());
-        }else {
-            message.setId1(p2.getScore());
-            message.setId2(p1.getScore());
-        }
-        message.setMatch(math);
-        String res = new MessageEncoder().encode(message);
+        if(socket != null &&
+                (SCORE_P1 != p1.getScore())
+        ) {
+            Message message = new Message();
+            message.setResult(type.getValue());
 
-        System.out.println(res);
-        socket.getOutputStream().write(res.getBytes());
-        socket.getOutputStream().flush();
+            if (p1.getName().equals(p1Name)) {
+                message.setId1(p1.getScore());
+                message.setId2(p2.getScore());
+            } else {
+                message.setId1(p2.getScore());
+                message.setId2(p1.getScore());
+            }
+            message.setMatch(math);
+            String res = new MessageEncoder().encode(message);
+
+            System.out.println(res);
+
+            socket.getOutputStream().write(res.getBytes());
+            socket.getOutputStream().flush();
 //        pySever.getBasicRemote().sendObject(message);
-
+        }
     }
 }

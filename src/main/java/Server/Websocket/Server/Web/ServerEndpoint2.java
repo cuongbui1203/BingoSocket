@@ -7,6 +7,7 @@ import Server.Websocket.Server.Web.Util.MessageEncoder;
 
 import javax.websocket.*;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -24,31 +25,32 @@ public class ServerEndpoint2 {
 
     @OnMessage
     public void onMessage(Message message, Session session) throws IOException, EncodeException, InterruptedException {
-        System.out.println("server control"+message);
+        System.out.println("server control: "+message);
 //        System.out.println(session);
-//        if(message.getAction() == 1){
-//            if(thread == null){
-//                Server server = new Server(message.getPasswd());
-//                thread = new Thread(server);
-////                thread.start();
-//                Message send = new Message();
-//                send.setPort(server.getPort());
-//                send.setIp("127.0.0.1");
-//                send.setPath("/game/bingo");
+        if(message.getAction() == 1){
+            if(gameThread == null){
+                Server server = new Server(message.getPasswd(), message.getMatch(), String.valueOf(message.getId1()),String.valueOf(message.getId2()));
+                gameThread = new Thread(server);
+//                thread.start();
+                Message send = new Message();
+                send.setPort(server.getPort());
+                send.setIp(InetAddress.getLocalHost().getHostAddress());
+                send.setPath("/game/bingo");
 //                try {
-//                    thread.start();
+//                    gameThread.start();
 //                    send.setResult(1);
 //                } catch (Exception e) {
 //                    send.setResult(0);
 //                    throw new RuntimeException(e);
 //                }
-////                session.getBasicRemote().sendObject(send);
-//            }
-//        }
-        if(message.getAction() == 1) {
-            gameThread = new Thread(new Server(message.getPasswd(), message.getMatch(), String.valueOf(message.getId1()),String.valueOf(message.getId2())));
-            gameThread.start();
+                send.setResult(1);
+                session.getBasicRemote().sendObject(send);
+            }
         }
+//        if(message.getAction() == 1) {
+//            gameThread = new Thread(new Server(message.getPasswd(), message.getMatch(), String.valueOf(message.getId1()),String.valueOf(message.getId2())));
+//            gameThread.start();
+//        }
     }
 
     @OnClose
