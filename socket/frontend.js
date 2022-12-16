@@ -15,8 +15,9 @@ $(function () {
       let msg = {
         type:0,
         select:1,
-        sender:"wed",
-        table:[1,2]
+        sender:"1",
+        table:[1,2],
+        pass: 'password',
       }
       connection.send(JSON.stringify(msg))
       console.log(JSON.stringify(msg))

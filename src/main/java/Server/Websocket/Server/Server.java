@@ -19,24 +19,8 @@ public class Server implements Runnable {
     static public String pass;
 
     public static void main(String[] args) {
-//        ServerEndpoint.password = pass;
-//        org.glassfish.tyrus.server.Server server = new org.glassfish.tyrus.server.Server("localhost",
-//                8887,
-//                "/game",
-//                ServerEndpoint.class);
-//
-//        try {
-//            server.start();
-//            System.out.println("Press any key to stop the server..");
-//            new Scanner(System.in).nextLine();
-//        } catch (DeploymentException e) {
-//            throw new RuntimeException(e);
-//        } finally {
-//            server.stop();
-//        }
-        Server server = new Server("",1,"1","2");
+        Server server = new Server("password",1,"1","2");
         Thread thread = new Thread(server);
-
         thread.start();
     }
 

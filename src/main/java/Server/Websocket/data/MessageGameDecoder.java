@@ -34,8 +34,8 @@ public class MessageGameDecoder implements Decoder.Text<MessageGame> {
         }
         ArrayList<Integer> table = new ArrayList<>();
         JSONArray jsonArray = (JSONArray) jsonObject.get("table");
-        for(int i = 0;i<jsonArray.size();i++){
-            table.add(Integer.parseInt(jsonArray.get(i).toString()));
+        for (Object o : jsonArray) {
+            table.add(Integer.parseInt(o.toString()));
         }
         messageGame.setTable(table);
         messageGame.setType(Integer.parseInt(jsonObject.get("type").toString()));

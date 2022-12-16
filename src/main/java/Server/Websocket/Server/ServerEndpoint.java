@@ -65,7 +65,7 @@ public class ServerEndpoint {
 //                session.close();
 //            }
 //        }
-        if (messageGame.getType() == Type.HELLO.getValue()) {
+        if (messageGame.getType() == Type.HELLO.getValue() && !gameStart) {
 
                 System.out.printf("%s join to game.%n", user);
                 peers.add(session);
@@ -88,7 +88,7 @@ public class ServerEndpoint {
             players.get(hit).move(p_hit);
             players.get(noHit).move(p_hit);
             for (Session peer : peers) {
-                if (players.get(noHit).getName().equals(user)) {
+                if (players.get(noHit).getName().equals(peer.getUserProperties().get("user"))) {
                     messageGame1.setType(Type.HIT.getValue());
                 } else {
                     messageGame1.setType(Type.ACCEPT.getValue());
@@ -102,7 +102,7 @@ public class ServerEndpoint {
             // Gửi yêu cầu đánh cho 2 người chơi
             for (Session peer : peers) {
                 messageGame1.setType(Type.CLIS.getValue());
-                if (players.get(noHit).getName().equals(user)) {
+                if (players.get(noHit).getName().equals(peer.getUserProperties().get("user"))) {
                     messageGame1.setSelect(0);
                     System.out.println("Send to "+user);
                 } else {
@@ -129,7 +129,7 @@ public class ServerEndpoint {
             messageGame2.setSelect(0); // thua
             for (Session peer : peers) {
                 if (players.get(hit).CheckWinCon()) {
-                    if (players.get(hit).getName().equals(user)) {
+                    if (players.get(hit).getName().equals(peer.getUserProperties().get("user"))) {
                         peer.getBasicRemote().sendObject(messageGame1);
                         messageGame1.setType(Type.SCORE.getValue());
                         messageGame1.setSelect(players.get(hit).getScore());
@@ -141,7 +141,7 @@ public class ServerEndpoint {
                         peer.getBasicRemote().sendObject(messageGame2);
                     }
                 } else {
-                    if (players.get(noHit).getName().equals(user)) {
+                    if (players.get(noHit).getName().equals(peer.getUserProperties().get("user"))) {
                         peer.getBasicRemote().sendObject(messageGame1);
                         messageGame1.setType(Type.SCORE.getValue());
                         messageGame1.setSelect(players.get(noHit).getScore());
@@ -173,7 +173,7 @@ public class ServerEndpoint {
                 messageGame1.setSelect(0);
                 messageGame1.setTable(new ArrayList<>());
                 peer.getBasicRemote().sendObject(messageGame1);
-                if (players.get(hit).getName().equals(user)) {
+                if (players.get(hit).getName().equals(peer.getUserProperties().get("user"))) {
                     //send player table
                     messageGame1.setType(Type.TABLES.getValue());
                     messageGame1.setTable(players.get(hit).getPlayerTable());
@@ -182,7 +182,7 @@ public class ServerEndpoint {
                     messageGame1.setType(Type.CLIS.getValue());
                     messageGame1.setSelect(1);
                     peer.getBasicRemote().sendObject(messageGame1);
-                } else {
+                } else if(players.get(noHit).getName().equals(peer.getUserProperties().get("user"))) {
 //                    gửi thông tin bàn chơi
                     messageGame1.setType(Type.TABLES.getValue());
                     messageGame1.setTable(players.get(noHit).getPlayerTable());
