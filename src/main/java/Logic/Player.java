@@ -173,12 +173,9 @@ public class Player {
             point++;
 
         }
-        maxpoint = point > maxpoint ? point : maxpoint;
+        maxpoint = Math.max(point, maxpoint);
         // if(point > maxpoint) maxpoint = point;
-        if (point < 5)
-            return false;
-        else
-            return true;
+        return point >= 5;
     }
 
 }

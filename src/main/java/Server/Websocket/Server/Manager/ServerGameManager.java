@@ -1,4 +1,4 @@
-package Server.Websocket.Server.Web;
+package Server.Websocket.Server.Manager;
 
 import org.glassfish.tyrus.server.Server;
 
@@ -6,7 +6,7 @@ import org.glassfish.tyrus.server.Server;
 import javax.websocket.DeploymentException;
 import java.util.Scanner;
 
-public class Server2 {
+public class ServerGameManager {
     static final int PORT = 12345;
     public static void main(String[] args) {
         Server server = new Server(

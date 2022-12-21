@@ -1,8 +1,8 @@
 package Server.Websocket.Server;
 
 import Logic.Player;
-import Server.Websocket.Server.Web.Util.Message;
-import Server.Websocket.Server.Web.Util.MessageEncoder;
+import Server.Websocket.Server.Manager.Util.Message;
+import Server.Websocket.Server.Manager.Util.MessageEncoder;
 import Server.Websocket.data.MessageGame;
 import Server.Websocket.data.MessageGameDecoder;
 import Server.Websocket.data.MessageGameEncoder;
@@ -13,11 +13,12 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 import static java.lang.String.format;
 
 @javax.websocket.server.ServerEndpoint(value = "/bingo", encoders = MessageGameEncoder.class, decoders = MessageGameDecoder.class)
-public class ServerEndpoint {
+public class ServerGameEndpoint {
     static boolean gameStart = false,gameEnd = false;
     static int hit = 0,noHit = 1;
     static boolean playerSend = false;
@@ -38,7 +39,7 @@ public class ServerEndpoint {
     }
 
     @OnMessage
-    public void onMessage(MessageGame messageGame, Session session) throws IOException, EncodeException {
+    public void onMessage(MessageGame messageGame, Session session) throws IOException, EncodeException, InterruptedException {
         String user = (String) session.getUserProperties().get("user");
         System.out.println(messageGame);
         MessageGame messageGame1 = new MessageGame();
@@ -49,32 +50,41 @@ public class ServerEndpoint {
         }
         user = (String) session.getUserProperties().get("user");
         // thêm người chơi mới vô game nếu điền đúng tên và mật khẩu
-//        if (messageGame.getType() == Type.HELLO.getValue() && !gameStart) {
-//            if (
-//                    messageGame.getPass().equals(password) &&
-//                            (messageGame.getSender().equals(p1Name) || messageGame.getSender().equals(p2Name))
-//            ) {
-//                System.out.printf("%s join to game.%n", user);
-//                peers.add(session);
-//                players.add(new Player(user));
-//                messageGame1.setType(Type.ACCEPT.getValue());
-//                session.getBasicRemote().sendObject(messageGame1);
-//            } else {
-//                messageGame1.setType(Type.REFUSE_2.getValue());
-//                session.getBasicRemote().sendObject(messageGame1);
-//                session.close();
-//            }
-//        }
         if (messageGame.getType() == Type.HELLO.getValue() && !gameStart) {
-
+            if (
+                    messageGame.getPass().equals(password) &&
+                            (messageGame.getSender().equals(p1Name) || messageGame.getSender().equals(p2Name))
+            ) {
                 System.out.printf("%s join to game.%n", user);
                 peers.add(session);
                 players.add(new Player(user));
                 messageGame1.setType(Type.ACCEPT.getValue());
                 session.getBasicRemote().sendObject(messageGame1);
-
+            } else {
+                messageGame1.setType(Type.REFUSE_2.getValue());
+                session.getBasicRemote().sendObject(messageGame1);
+                session.close();
+            }
         }
+//        if (messageGame.getType() == Type.HELLO.getValue() && !gameStart) {
+//
+//                System.out.printf("%s join to game.%n", user);
+//                peers.add(session);
+//                players.add(new Player(user));
+//                messageGame1.setType(Type.ACCEPT.getValue());
+//                session.getBasicRemote().sendObject(messageGame1);
+//
+//        }
 
+//        if(user.equals(players.get(0).getName())) {
+//            messageGame1.setType(Type.SCORE.getValue());
+//            messageGame1.setSelect(players.get(0).getScore());
+//            session.getBasicRemote().sendObject(messageGame1);
+//        }else if(user.equals(players.get(1).getName())) {
+//            messageGame1.setType(Type.SCORE.getValue());
+//            messageGame1.setSelect(players.get(1).getScore());
+//            session.getBasicRemote().sendObject(messageGame1);
+//        }
 
 
         // xử lý khi game chạy
@@ -84,38 +94,43 @@ public class ServerEndpoint {
             messageGame1.setTable(new ArrayList<>());
 
             int p_hit = messageGame.getSelect();
-            System.out.printf("%s Hit: %d\n",messageGame.getSender(),p_hit);
+            System.out.printf("%s Hit: %d\n", messageGame.getSender(), p_hit);
             players.get(hit).move(p_hit);
             players.get(noHit).move(p_hit);
+
+
             for (Session peer : peers) {
                 if (players.get(noHit).getName().equals(peer.getUserProperties().get("user"))) {
-                    messageGame1.setType(Type.HIT.getValue());
+                    messageGame1.setType(Type.HITTED.getValue());
                 } else {
                     messageGame1.setType(Type.ACCEPT.getValue());
                 }
                 messageGame1.setSelect(p_hit);
                 peer.getBasicRemote().sendObject(messageGame1);
             }
-            int tg = hit;
-            hit = noHit;
-            noHit = tg;
-            // Gửi yêu cầu đánh cho 2 người chơi
-            for (Session peer : peers) {
-                messageGame1.setType(Type.CLIS.getValue());
-                if (players.get(noHit).getName().equals(peer.getUserProperties().get("user"))) {
-                    messageGame1.setSelect(0);
-                    System.out.println("Send to "+user);
-                } else {
-                    messageGame1.setSelect(1);
-                }
-                peer.getBasicRemote().sendObject(messageGame1);
-            }
-
-
+            players.get(0).CheckWinCon();
+            players.get(1).CheckWinCon();
             if (players.get(0).CheckWinCon() || players.get(1).CheckWinCon()) {
                 gameStart = false;
                 gameEnd = true;
+            } else {
+                int tg = hit;
+                hit = noHit;
+                noHit = tg;
+                // Gửi yêu cầu đánh cho 2 người chơi
+                for (Session peer : peers) {
+                    messageGame1.setType(Type.CLIS.getValue());
+                    if (players.get(noHit).getName().equals(peer.getUserProperties().get("user"))) {
+                        messageGame1.setSelect(0);
+                        System.out.println("Send to " + peer.getUserProperties().get("user"));
+                    } else {
+                        System.out.println("Send to " + peer.getUserProperties().get("user"));
+                        messageGame1.setSelect(1);
+                    }
+                    peer.getBasicRemote().sendObject(messageGame1);
+                }
             }
+
         }
 
         if (gameEnd) {
@@ -156,16 +171,18 @@ public class ServerEndpoint {
             }
 
         } else {
+
             sendToPySever(Type.SCORE, players.get(0), players.get(1));
         }
 
         // khởi tạo game mới
-        if (peers.size() == 2 && !gameStart) {
+        if (peers.size() == 2 && !gameStart && !gameEnd) {
             gameStart = true;
             playerSend = false;
             System.out.println("gameStart");
             messageGame1.setType(Type.START.getValue());
             sendToPySever(Type.START, players.get(0), players.get(1));
+            TimeUnit.SECONDS.sleep(1);
             for (Session peer : peers) {
                 //send start
                 System.out.println(peer.getId());
@@ -204,28 +221,26 @@ public class ServerEndpoint {
         sendToPySever(Type.GG,players.get(0),players.get(1));
         players.removeIf(player -> player.getName().equals(session.getId()));
         peers.remove(session);
-        for (Session peer : peers) {
-            MessageGame messageGame = new MessageGame();
-            messageGame.setType(Type.GG.getValue());
-            messageGame.setTable(new ArrayList<>());
-            messageGame.setSelect(1);
-            peer.getBasicRemote().sendObject(messageGame);
-            messageGame.setType(Type.SCORE.getValue());
-            messageGame.setSelect(players.get(0).getScore());
-            peer.getBasicRemote().sendObject(messageGame);
+        if(!gameEnd) {
+            for (Session peer : peers) {
+                MessageGame messageGame = new MessageGame();
+                messageGame.setType(Type.GG.getValue());
+                messageGame.setTable(new ArrayList<>());
+                messageGame.setSelect(1);
+                peer.getBasicRemote().sendObject(messageGame);
+                messageGame.setType(Type.SCORE.getValue());
+                messageGame.setSelect(players.get(0).getScore());
+                peer.getBasicRemote().sendObject(messageGame);
+            }
         }
-
-
-
         System.exit(1);
     }
 
 
     private void sendToPySever(Type type,Player p1,Player p2) throws EncodeException, IOException {
 //        if(pySever == null) return;\
-        if(socket != null &&
-                (SCORE_P1 != p1.getScore())
-        ) {
+        System.out.printf("Score \n%s: %d\n%s: %d\n",p1.getName(),p1.getScore(),p2.getName(),p2.getScore());
+        if(socket != null ) {
             Message message = new Message();
             message.setResult(type.getValue());
 
@@ -239,10 +254,10 @@ public class ServerEndpoint {
             message.setMatch(math);
             String res = new MessageEncoder().encode(message);
 
-            System.out.println(res);
 
             socket.getOutputStream().write(res.getBytes());
             socket.getOutputStream().flush();
+            System.out.println(res);
 //        pySever.getBasicRemote().sendObject(message);
         }
     }

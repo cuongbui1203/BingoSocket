@@ -1,4 +1,4 @@
-package Server.Websocket.Server.Web.Util;
+package Server.Websocket.Server.Manager.Util;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -7,7 +7,7 @@ import org.json.simple.parser.ParseException;
 import javax.websocket.DecodeException;
 import javax.websocket.Decoder;
 import javax.websocket.EndpointConfig;
-public class MessageDecoder implements Decoder.Text<Server.Websocket.Server.Web.Util.Message> {
+public class MessageDecoder implements Decoder.Text<Server.Websocket.Server.Manager.Util.Message> {
 
     @Override
     public void init(final EndpointConfig config) {

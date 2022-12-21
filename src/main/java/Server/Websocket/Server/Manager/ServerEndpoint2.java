@@ -1,9 +1,9 @@
-package Server.Websocket.Server.Web;
+package Server.Websocket.Server.Manager;
 
-import Server.Websocket.Server.Server;
-import Server.Websocket.Server.Web.Util.Message;
-import Server.Websocket.Server.Web.Util.MessageDecoder;
-import Server.Websocket.Server.Web.Util.MessageEncoder;
+import Server.Websocket.Server.ServerGame;
+import Server.Websocket.Server.Manager.Util.Message;
+import Server.Websocket.Server.Manager.Util.MessageDecoder;
+import Server.Websocket.Server.Manager.Util.MessageEncoder;
 
 import javax.websocket.*;
 import java.io.IOException;
@@ -29,13 +29,13 @@ public class ServerEndpoint2 {
 //        System.out.println(session);
         if(message.getAction() == 1){
             if(gameThread == null){
-                Server server = new Server(message.getPasswd(), message.getMatch(), String.valueOf(message.getId1()),String.valueOf(message.getId2()));
+                ServerGame server = new ServerGame(message.getPasswd(), message.getMatch(), String.valueOf(message.getId1()),String.valueOf(message.getId2()));
                 gameThread = new Thread(server);
 //                thread.start();
                 Message send = new Message();
                 send.setPort(server.getPort());
                 send.setIp(InetAddress.getLocalHost().getHostAddress());
-                send.setPath("/game/bingo");
+                send.setPath("game/bingo");
 //                try {
 //                    gameThread.start();
 //                    send.setResult(1);
@@ -43,12 +43,13 @@ public class ServerEndpoint2 {
 //                    send.setResult(0);
 //                    throw new RuntimeException(e);
 //                }
+                gameThread.start();
                 send.setResult(1);
                 session.getBasicRemote().sendObject(send);
             }
         }
 //        if(message.getAction() == 1) {
-//            gameThread = new Thread(new Server(message.getPasswd(), message.getMatch(), String.valueOf(message.getId1()),String.valueOf(message.getId2())));
+//            gameThread = new Thread(new ServerGame(message.getPasswd(), message.getMatch(), String.valueOf(message.getId1()),String.valueOf(message.getId2())));
 //            gameThread.start();
 //        }
     }

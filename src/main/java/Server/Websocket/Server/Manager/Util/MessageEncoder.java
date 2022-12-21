@@ -1,4 +1,4 @@
-package Server.Websocket.Server.Web.Util;
+package Server.Websocket.Server.Manager.Util;
 
 import org.json.simple.JSONObject;
 
@@ -6,7 +6,7 @@ import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
 import javax.websocket.EndpointConfig;
 
-public class MessageEncoder implements Encoder.Text<Server.Websocket.Server.Web.Util.Message> {
+public class MessageEncoder implements Encoder.Text<Server.Websocket.Server.Manager.Util.Message> {
 
     @Override
     public void init(final EndpointConfig config) {

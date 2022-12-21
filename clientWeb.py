@@ -1,62 +1,41 @@
+import os
+
+try:
+    import asyncio
+    import json
+    import socket
+    import websockets
+except ImportError:
+    print("Trying to Install required module: requests\n")
+    os.system('python -m pip install asyncio websockets json')
+# -- above lines try to install requests module if not present
+# -- if all went well, import required module again ( for global access)
+
 import asyncio
 import json
-from io import StringIO
 import socket
 import websockets
-from websockets import connect
-from threading import Lock, Thread
-
-lock = Lock()
-
-message_list = []  # global
-
-
-# nhận thông tin về game
-async def ws_game():
-    global message_list
-    bln_running = True
-    # ws_a = websockets.connect("ws://127.0.0.1:10637/game/bingo")
-    async with connect("ws://127.0.0.1:10637/game/bingo") as ws_a:
-        print(ws_a)
-        io = StringIO()
-        data = {
-            'type': 14,
-            'select': 0,
-            'sender': "python",
-            'table': [-1]
-        }
-        json.dump(data, io)
-        print(io.getvalue())
-
-        await ws_a.send(io.getvalue())
-
-        while bln_running:
-            response_a = await ws_a.recv()
-            # dataRecv = json.loads(msg)
-            print(response_a)
-            lock.acquire()
-            message_list.append(response_a)
-            lock.release()
 
 
 # Gửi thông tin game cho web
 async def ws_web():
-    global message_list
+    print("start new loop")
     bln_running = True
+    sevSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sevSocket.bind(('localhost', 12346))
+    print('socket serve start')
+    sevSocket.listen(5)
+    cli, ip = sevSocket.accept()
+    print(cli)
+
+    msg = cli.recv(1024).decode()
     # ws_b = websockets.connect("ws://127.0.0.1:12345/")
     async with websockets.connect("ws://104.194.240.16/ws/channels/") as ws_b:
         # async with websockets.connect("ws://127.0.0.1:12345/") as ws_b:
         print(ws_b)
-        lenArray = len(message_list)
-        sevSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sevSocket.bind(('localhost', 12346))
-        print('socket serve start')
-        sevSocket.listen(5)
-        cli, ip = sevSocket.accept()
 
         while bln_running:
             # if lenArray != len(message_list):
-            msg = cli.recv(1024).decode()
             print(msg)
             obj = json.loads(msg)
             print('result: ' + str(obj['result']))
@@ -91,12 +70,20 @@ async def ws_web():
                     'match': obj['match'],
                     'status': 1
                 }
-            io = StringIO()
-            json.dump(objSend, io)
-            message_list.append(msg)
             # lock.acquire()
-            await ws_b.send(io.getvalue())
-            # lock.release()
+
+            try:
+                await ws_b.send(json.dumps(objSend))
+                print(await ws_b.recv())
+                if obj['result'] == 7:
+                    print("end")
+                    return
+            except:
+                pass
+            msg = cli.recv(1024).decode()
+            # lock.release()S
+
+        # ws_b.close()
 
 
 def between_callback_web():
@@ -108,12 +95,11 @@ def between_callback_web():
 
 
 # ------------main-------------
-threads = []
+asyncio.run(ws_web())
+# loop = asyncio.new_event_loop()
 
-for func in [between_callback_web()]:
-    threads.append(Thread(target=func))
-    # threads[-1].start()
+# asyncio.set_event_loop(loop=loop)
 
-for i in threads:
-    i.start()
-    i.join()
+# loop.run_until_complete(ws_web())
+# loop.run_forever()
+# loop.

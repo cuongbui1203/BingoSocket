@@ -1,4 +1,4 @@
-package Server.Websocket.Server.Web.Util;
+package Server.Websocket.Server.Manager.Util;
 
 import lombok.Data;
 
